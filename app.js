@@ -1,10 +1,12 @@
 //jshint esversion:6
-
+// 0C4gX7nblTeqrKLf
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const dotenv = require('dotenv');
+dotenv.config();
 
 const homeStartingContent = "Welcome to my daily journal! I'm Koushubh Yadav, a web developer with a passion for crafting user-friendly websites. Currently seeking a challenging role, I'm on a quest to learn, grow, and leverage my skills. I hold a Bachelor's in Computer Science with a GPA of 8.4.Explore my projects, ranging from a dynamic CRUD To-do List web-app to a React-based chatroom application. I've also contributed to research with a published paper on NFT Marketplaces. Join me as I document my journey and share insights into web development.Connect with me on LinkedIn or GitHub, and let's navigate the exciting world of web development together.";
 
@@ -19,7 +21,18 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/blogDB", { useNewUrlParser: true });
+// MONGODB_URI = mongodb+srv://koushubhyadav:0C4gX7nblTeqrKLf@cluster0.e6gja7b.mongodb.net/cluster0?retryWrites=true&w=majority
+
+const uri = process.env.MONGODB_URI || '';
+
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+    // Your code here
+  })
+  .catch(error => {
+    console.error('Error connecting to MongoDB:', error);
+  });
 
 const postSchema = {
   title: String,
@@ -101,6 +114,8 @@ app.get("/contact", function (req, res) {
   res.render("contact", { contactContent: contactContent });
 });
 
-app.listen(3000, function () {
-  console.log("Server started on port 3000");
+const PORT = process.env.PORT;
+
+app.listen(PORT, function () {
+  console.log("Server started on port " + PORT);
 });
